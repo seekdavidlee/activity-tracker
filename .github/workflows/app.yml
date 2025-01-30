@@ -66,5 +66,5 @@ jobs:
           azure_static_web_apps_api_token: ${{ steps.init-static-web.outputs.apiKey }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: 'EKlee.ActivityTracker/'
+          app_location: 'EKlee.ActivityTracker'
           output_location: '/wwwroot'  
