@@ -5,46 +5,37 @@ namespace Eklee.ActivityTracker.Services;
 
 public class BlobService(Config config, IAccessTokenProvider accessTokenProvider)
 {
-    //private const string SECRETS_META_FILE_NAME = "secrets-meta.json";
-    //public async Task<ApimConfigRoot> DownloadAsync()
-    //{
-    //    var credential = new AccessTokenProviderTokenCredential(accessTokenProvider);
-    //    BlobClient blobContainerClient = new(new Uri(config.StorageUri, $"{config.StorageContainerName}/config.json"), credential);
-    //    var content = await blobContainerClient.DownloadContentAsync();
-    //    return content.Value.Content.ToObjectFromJson<ApimConfigRoot>()!;
-    //}
+    private readonly BlobServiceClient blobServiceClient = new(config.StorageUri, new AccessTokenProviderTokenCredential(accessTokenProvider));
 
-    //public async Task<SecretItemMetaList> GetMetaAsync()
-    //{
-    //    var credential = new AccessTokenProviderTokenCredential(accessTokenProvider);
-    //    BlobClient blobContainerClient = new(new Uri(config.StorageUri, $"{config.StorageContainerName}/{SECRETS_META_FILE_NAME}"), credential);
-    //    if (!await blobContainerClient.ExistsAsync())
-    //    {
-    //        return new SecretItemMetaList();
-    //    }
-    //    var content = await blobContainerClient.DownloadContentAsync();
-    //    return content.Value.Content.ToObjectFromJson<SecretItemMetaList>()!;
-    //}
-
-    //public async Task UpdateMetaAsync(SecretItemMetaList secretItemMetaList)
-    //{
-    //    var credential = new AccessTokenProviderTokenCredential(accessTokenProvider);
-    //    BlobClient blobContainerClient = new(new Uri(config.StorageUri, $"{config.StorageContainerName}/{SECRETS_META_FILE_NAME}"), credential);
-    //    await blobContainerClient.UploadAsync(BinaryData.FromObjectAsJson(secretItemMetaList), overwrite: true);
-    //}
-
-    public async Task<IEnumerable<string>> ListAsync()
+    private BlobContainerClient? blobContainerClient = null;
+    private BlobContainerClient BlobContainerClient
     {
-        List<string> items = [];
-
-        var credential = new AccessTokenProviderTokenCredential(accessTokenProvider);
-        var blobServiceClient = new BlobServiceClient(config.StorageUri, credential);
-        var blobContainerClient = blobServiceClient.GetBlobContainerClient(config.StorageContainerName);
-        await foreach (var b in blobContainerClient.GetBlobsAsync())
+        get
         {
-            items.Add(b.Name);
+            blobContainerClient ??= blobServiceClient.GetBlobContainerClient(config.StorageContainerName);
+            return blobContainerClient;
         }
+    }
 
+    public Task SaveAsync(string userPrefix, string key, string value)
+    {
+        return BlobContainerClient.GetBlobClient($"{userPrefix}/{key}").UploadAsync(BinaryData.FromString(value), overwrite: true);
+    }
+
+    public Task DeleteAsync(string userPrefix, string key)
+    {
+        return BlobContainerClient.GetBlobClient($"{userPrefix}/{key}").DeleteIfExistsAsync();
+    }
+
+    public async Task<IEnumerable<T>> ListAsync<T>(string userPrefix)
+    {
+        List<T> items = [];
+        await foreach (var b in BlobContainerClient.GetBlobsAsync(prefix: userPrefix))
+        {
+            var c = BlobContainerClient.GetBlobClient(b.Name);
+            var res = await c.DownloadContentAsync();
+            items.Add(res.Value.Content.ToObjectFromJson<T>()!);
+        }
         return items;
     }
 }

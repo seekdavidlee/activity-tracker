@@ -1,7 +1,56 @@
 ﻿@page "/"
+@using Eklee.ActivityTracker.Models
 
-<RadzenStack Orientation="Orientation.Vertical">
-    <RadzenButton ButtonType="ButtonType.Button" Size="ButtonSize.Large" Icon="save" Text="New Session" />
-</RadzenStack>
-
-
+@if (activities is not null)
+{
+    <RadzenPanel>
+        <HeaderTemplate>
+            <RadzenRow RowGap="0" Style="width:100%">
+                <RadzenColumn SizeMD="11">
+                    <RadzenText TextStyle="TextStyle.H6" Class="rz-display-flex rz-align-items-center rz-m-0">
+                        <RadzenIcon Icon="home" class="rz-mr-1" /><b>Activities</b>
+                    </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeMD="1">
+                    <RadzenRow JustifyContent="JustifyContent.End" RowGap="0">
+                        <RadzenColumn>
+                            <RadzenButton title="New" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="NewActivity" />
+                            <RadzenButton title="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="RefreshAsync" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenColumn>
+            </RadzenRow>
+        </HeaderTemplate>
+        <ChildContent>
+            <RadzenCard class="rz-mt-4">
+                <RadzenDataList PageSize="10" WrapItems="true" AllowPaging="true"
+                                Data="@activities" TItem="HomeActivity">
+                    <Template Context="activity">
+                        <RadzenCard Style="width: 200px">
+                            @if (activity.StartTimerView)
+                            {
+                                <h1>Start timer!</h1>
+                            }
+                            else
+                            {
+                                <RadzenStack Orientation="Orientation.Vertical">
+                                    <RadzenCard @onclick="()=>SelectActivity(activity)">
+                                        <RadzenRow>
+                                            <RadzenColumn>
+                                                <RadzenText Text=@(activity.Name) />
+                                            </RadzenColumn>
+                                            <RadzenColumn>
+                                                <RadzenText Text=@(activity.DisplayStats) />
+                                            </RadzenColumn>
+                                        </RadzenRow>
+                                    </RadzenCard>
+                                    <RadzenButton title="Delete" Icon="delete" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="()=>DeleteActivity(activity)" />
+                                </RadzenStack>
+                            }
+                        </RadzenCard>
+                    </Template>
+                </RadzenDataList>
+            </RadzenCard>
+        </ChildContent>
+    </RadzenPanel>
+}
