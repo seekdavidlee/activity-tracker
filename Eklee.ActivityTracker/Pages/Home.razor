@@ -1,0 +1,86 @@
+﻿@page "/"
+@using Eklee.ActivityTracker.Models
+
+@if (activities is not null)
+{
+    <RadzenPanel>
+        <HeaderTemplate>
+            <RadzenRow RowGap="0" Style="width:100%">
+                <RadzenColumn SizeMD="11">
+                    <RadzenText TextStyle="TextStyle.H6" Class="rz-display-flex rz-align-items-center rz-m-0">
+                        <RadzenIcon Icon="home" class="rz-mr-1" /><b>Activities</b>
+                    </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeMD="1">
+                    <RadzenRow JustifyContent="JustifyContent.End" RowGap="0">
+                        <RadzenColumn>
+                            <RadzenButton title="New" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="NewActivity" />
+                            <RadzenButton title="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="RefreshAsync" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenColumn>
+            </RadzenRow>
+        </HeaderTemplate>
+        <ChildContent>
+            <RadzenCard class="rz-mt-4">
+                <RadzenDataList @ref=@radzenDataList PageSize="3" WrapItems="true" AllowPaging="true"
+                                Data="@activities" TItem="HomeActivity">
+                    <Template Context="activity">
+                        <RadzenCard Style="width: 200px">
+                            @if (activity.StartTimerView && activitySession is not null && activitySession.Items is not null)
+                            {
+                                <RadzenRow>
+                                    <RadzenColumn>
+                                        <RadzenText Text="Started at: " />
+                                        <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession.Start.ToString()" />
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenText Text="Iteration: " />
+                                        <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession!.Items!.Length.ToString()" />
+                                        @if (activitySession.Items.Length > 0)
+                                        {
+                                            var valid = activitySession.Items.Where(x => x.DurationInSeconds is not null);
+                                            if (valid.Count() > 0)
+                                            {
+                                                var avg = double.Round(valid.Average(x => x.DurationInSeconds!.Value), 2);
+                                                <RadzenText Text="Average (secs): " />
+                                                <RadzenText TextStyle="TextStyle.DisplayH5" Text="@avg.ToString()" />
+                                            }
+                                        }
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenButton title="Next" Icon="pace" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Click="@NextActivity" />
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenButton title="Stop" Icon="alarm_off" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Large" Click="@StopActivityAsync" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            }
+                            else
+                            {
+                                <RadzenRow>
+                                    <RadzenColumn>
+                                        <RadzenText TextStyle="TextStyle.DisplayH5" Text=@(activity.Name) />
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        @foreach (var stat in activity.GetStats())
+                                        {
+                                            <RadzenText Text="@stat.Key" />
+                                            <RadzenText TextStyle="TextStyle.DisplayH5" Text="@stat.Value" />
+                                        }
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenButton title="Start timer" Icon="timer" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Click="()=>SelectActivity(activity)" />
+                                    </RadzenColumn>
+                                    <RadzenColumn>                                        
+                                        <RadzenButton title="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Medium" Click="()=>DeleteActivity(activity)" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            }
+                        </RadzenCard>
+                    </Template>
+                </RadzenDataList>
+            </RadzenCard>
+        </ChildContent>
+    </RadzenPanel>
+}

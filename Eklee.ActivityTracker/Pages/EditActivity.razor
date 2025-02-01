@@ -1,0 +1,22 @@
+﻿@using Eklee.ActivityTracker.Models
+
+@if (Model is not null)
+{
+    <RadzenTemplateForm Data="@Model" Submit="(Activity args)=> Submit(args)">
+        <RadzenStack Gap="1rem">
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Name" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="Name" @bind-Value="Model.Name" />
+                    <RadzenRequiredValidator Component="Name" Text="Name is required." />
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+            <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="@submitIcon" Text="Save" title="@submitTitle" />
+            <RadzenButton ButtonType="ButtonType.Button" Click=@Cancel Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Light" Icon="close" Text="Cancel" title="@cancelTitle" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+}
