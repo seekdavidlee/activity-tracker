@@ -19,7 +19,7 @@ public class ActivityService(BlobService blobService, UserService userService)
         {
             activity.Id = $"{Guid.NewGuid():N}.json";
         }
-
+        activity.LastUpdated = DateTime.Now;
         var username = await userService.GetUserNameAsync();
         await blobService.SaveAsync(username, activity.Id, JsonSerializer.Serialize(activity));
     }

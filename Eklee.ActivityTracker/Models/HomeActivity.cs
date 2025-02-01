@@ -6,16 +6,31 @@ public class HomeActivity(Activity activity)
 
     public bool StartTimerView { get; set; }
 
-    public string DisplayStats
+    private int GetSessionCount()
     {
-        get
+        if (activity.Sessions is null || activity.Sessions.Length == 0)
         {
-            if (activity.Items is null || activity.Items.Length == 0)
-            {
-                return "No items, click to select";
-            }
-            return $"Total records: {activity.Items.Length}";
+            return 0;
         }
+        return activity.Sessions.Length;
+    }
+
+    private double GetAvgDurationInSeconds()
+    {
+        if (activity.Sessions is null || activity.Sessions.Length == 0)
+        {
+            return 0;
+        }
+        return activity.Sessions.Average((ActivitySession x) => x.Items!.Average((ActivityItem y) => y.DurationInSeconds!.Value));
+    }
+
+    public List<HomeActivityStat> GetStats()
+    {
+        return
+        [
+            new HomeActivityStat("Session Count", GetSessionCount().ToString()),
+            new HomeActivityStat("Avg Duration", double.Round( GetAvgDurationInSeconds(),2).ToString())
+        ];
     }
 
     public Activity GetActivity()
@@ -23,3 +38,5 @@ public class HomeActivity(Activity activity)
         return activity;
     }
 }
+
+public record HomeActivityStat(string Key, string Value);
