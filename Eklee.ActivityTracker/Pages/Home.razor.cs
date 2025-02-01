@@ -2,6 +2,7 @@
 using Eklee.ActivityTracker.Services;
 using Microsoft.AspNetCore.Components;
 using Radzen;
+using Radzen.Blazor;
 
 namespace Eklee.ActivityTracker.Pages;
 
@@ -10,9 +11,10 @@ public partial class Home
     [Inject] ActivityService? ActivityService { get; set; }
     [Inject] DialogService? DialogService { get; set; }
 
-    private List<HomeActivity>? activities;
+    private readonly List<HomeActivity> activities = [];
     private ActivitySession? activitySession;
     private HomeActivity? activeActivity;
+    private RadzenDataList<HomeActivity>? radzenDataList;
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,7 +23,10 @@ public partial class Home
 
     private async Task RefreshAsync()
     {
-        activities = [.. (await ActivityService!.GetActivitiesAsync()).Select(x => new HomeActivity(x)).OrderByDescending(x => x.GetActivity().LastUpdated)];
+        activities.Clear();
+        activities.AddRange([.. (await ActivityService!.GetActivitiesAsync()).Select(x => new HomeActivity(x)).OrderByDescending(x => x.GetActivity().LastUpdated)]);
+        await radzenDataList!.FirstPage();
+        //await radzenDataList!.Reload();
     }
 
     private void SelectActivity(HomeActivity activity)
