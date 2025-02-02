@@ -12,12 +12,15 @@
                     </RadzenText>
                 </RadzenColumn>
                 <RadzenColumn SizeMD="1">
-                    <RadzenRow JustifyContent="JustifyContent.End" RowGap="0">
-                        <RadzenColumn>
-                            <RadzenButton title="New" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="NewActivity" />
-                            <RadzenButton title="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="RefreshAsync" />
-                        </RadzenColumn>
-                    </RadzenRow>
+                    @if (activitySession is null || activitySession.Items is null)
+                    {                        
+                        <RadzenRow JustifyContent="JustifyContent.End" RowGap="0">
+                            <RadzenColumn>
+                                <RadzenButton title="New" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="NewActivity" />
+                                <RadzenButton title="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" Click="RefreshAsync" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    }
                 </RadzenColumn>
             </RadzenRow>
         </HeaderTemplate>
