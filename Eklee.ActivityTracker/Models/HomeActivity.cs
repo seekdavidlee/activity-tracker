@@ -4,7 +4,7 @@ public class HomeActivity(Activity activity)
 {
     public string Name => activity.Name;
 
-    public bool StartTimerView { get; set; }
+    //public bool StartTimerView { get; set; }
 
     private int GetSessionCount()
     {
