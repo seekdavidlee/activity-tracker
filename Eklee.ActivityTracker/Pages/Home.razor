@@ -23,41 +23,47 @@
         </HeaderTemplate>
         <ChildContent>
             <RadzenCard class="rz-mt-4">
-                <RadzenDataList @ref=@radzenDataList PageSize="3" WrapItems="true" AllowPaging="true"
-                                Data="@activities" TItem="HomeActivity">
-                    <Template Context="activity">
-                        <RadzenCard Style="width: 200px">
-                            @if (activity.StartTimerView && activitySession is not null && activitySession.Items is not null)
+                @if (activitySession is not null && activitySession.Items is not null)
+                {
+                    <RadzenRow>
+                        <RadzenColumn>
+                            <RadzenText Text="Started at: " />
+                            <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession.Start.ToString()" />
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenText Text="Current Lap: " />
+                            <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession!.Items!.Length.ToString()" />
+                            @if (activitySession.Items.Length > 0)
                             {
-                                <RadzenRow>
-                                    <RadzenColumn>
-                                        <RadzenText Text="Started at: " />
-                                        <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession.Start.ToString()" />
-                                    </RadzenColumn>
-                                    <RadzenColumn>
-                                        <RadzenText Text="Iteration: " />
-                                        <RadzenText TextStyle="TextStyle.DisplayH5" Text="@activitySession!.Items!.Length.ToString()" />
-                                        @if (activitySession.Items.Length > 0)
-                                        {
-                                            var valid = activitySession.Items.Where(x => x.DurationInSeconds is not null);
-                                            if (valid.Count() > 0)
-                                            {
-                                                var avg = double.Round(valid.Average(x => x.DurationInSeconds!.Value), 2);
-                                                <RadzenText Text="Average (secs): " />
-                                                <RadzenText TextStyle="TextStyle.DisplayH5" Text="@avg.ToString()" />
-                                            }
-                                        }
-                                    </RadzenColumn>
-                                    <RadzenColumn>
-                                        <RadzenButton title="Next" Icon="pace" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Click="@NextActivity" />
-                                    </RadzenColumn>
-                                    <RadzenColumn>
-                                        <RadzenButton title="Stop" Icon="alarm_off" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Large" Click="@StopActivityAsync" />
-                                    </RadzenColumn>
-                                </RadzenRow>
+                                var valid = activitySession.Items.Where(x => x.DurationInSeconds is not null);
+                                if (valid.Count() > 0)
+                                {
+                                    var avg = double.Round(valid.Average(x => x.DurationInSeconds!.Value), 2);
+                                    <RadzenText Text="Average (secs): " />
+                                    <RadzenText TextStyle="TextStyle.DisplayH5" Text="@avg.ToString()" />
+
+                                    <RadzenText Text="Last Lap (secs): " />
+                                    <RadzenText TextStyle="TextStyle.DisplayH5" Text="@valid.Last().DurationInSeconds.ToString()" />
+                                }
                             }
-                            else
-                            {
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenButton Text="Next" Style="min-width:5rem; min-height:5rem" title="Next" Icon="pace" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Click="@NextActivity" />
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenButton Text="Stop" Style="min-width:5rem; min-height:5rem" title="Stop" Icon="alarm_off" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Large" Click="@StopActivityAsync" />
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenButton Text="Cancel" Style="min-width:5rem; min-height:5rem" title="Cancel" Icon="cancel" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Large" Click="@CancelActivity" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                }
+                else
+                {
+                    <RadzenDataList @ref=@radzenDataList PageSize="3" WrapItems="true" AllowPaging="true"
+                                    Data="@activities" TItem="HomeActivity">
+                        <Template Context="activity">
+                            <RadzenCard Style="width: 200px">
                                 <RadzenRow>
                                     <RadzenColumn>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" Text=@(activity.Name) />
@@ -72,14 +78,15 @@
                                     <RadzenColumn>
                                         <RadzenButton title="Start timer" Icon="timer" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Click="()=>SelectActivity(activity)" />
                                     </RadzenColumn>
-                                    <RadzenColumn>                                        
+                                    <RadzenColumn>
                                         <RadzenButton title="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Medium" Click="()=>DeleteActivity(activity)" />
                                     </RadzenColumn>
                                 </RadzenRow>
-                            }
-                        </RadzenCard>
-                    </Template>
-                </RadzenDataList>
+
+                            </RadzenCard>
+                        </Template>
+                    </RadzenDataList>
+                }
             </RadzenCard>
         </ChildContent>
     </RadzenPanel>

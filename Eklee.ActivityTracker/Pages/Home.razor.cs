@@ -25,13 +25,11 @@ public partial class Home
     {
         activities.Clear();
         activities.AddRange([.. (await ActivityService!.GetActivitiesAsync()).Select(x => new HomeActivity(x)).OrderByDescending(x => x.GetActivity().LastUpdated)]);
-        await radzenDataList!.FirstPage();
-        //await radzenDataList!.Reload();
+        await radzenDataList!.FirstPage();        
     }
 
     private void SelectActivity(HomeActivity activity)
     {
-        activity.StartTimerView = true;
         if (activitySession is null)
         {
             activitySession = new ActivitySession
@@ -69,7 +67,14 @@ public partial class Home
 
         await ActivityService!.SaveActivityAsync(activeActivity.GetActivity());
 
-        activeActivity.StartTimerView = false;
+
+        activitySession = null;
+        activeActivity = null;
+        await RefreshAsync();
+    }
+
+    private async Task CancelActivity()
+    {
         activitySession = null;
         activeActivity = null;
         await RefreshAsync();
