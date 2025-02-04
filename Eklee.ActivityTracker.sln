@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eklee.ActivityTracker", "Eklee.ActivityTracker\Eklee.ActivityTracker.csproj", "{A6AFE1CC-B916-4F60-AEDC-747D6504C16A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eklee.ActivityTracker.Api", "Eklee.ActivityTracker.Api\Eklee.ActivityTracker.Api.csproj", "{BF7A6FCF-9EEC-4377-B308-3233C7462038}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A6AFE1CC-B916-4F60-AEDC-747D6504C16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6AFE1CC-B916-4F60-AEDC-747D6504C16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6AFE1CC-B916-4F60-AEDC-747D6504C16A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF7A6FCF-9EEC-4377-B308-3233C7462038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF7A6FCF-9EEC-4377-B308-3233C7462038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF7A6FCF-9EEC-4377-B308-3233C7462038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF7A6FCF-9EEC-4377-B308-3233C7462038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
