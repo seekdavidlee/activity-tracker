@@ -1,15 +1,9 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-
-@inherits LayoutComponentBase
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
+﻿@inherits LayoutComponentBase
 
 <RadzenLayout style="height: 100%">
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenLabel Text="Welcome to activity Tracker" />&nbsp;&nbsp;
-            <RadzenLink Text="[Sign out]" @onclick="()=>SignOut()" />            
+            <RadzenLabel Text="Welcome to activity Tracker" />       
         </RadzenStack>
     </RadzenHeader>
     <RadzenBody>

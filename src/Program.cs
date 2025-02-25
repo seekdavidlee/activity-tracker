@@ -18,11 +18,12 @@ using var response = await http.GetAsync("appsettings.json");
 using var stream = await response.Content.ReadAsStreamAsync();
 
 builder.Configuration.AddJsonStream(stream);
+
+builder.Services.AddHttpClient(nameof(BlobService), (sp, x) => x.BaseAddress = sp.GetRequiredService<Config>().StorageUri);
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddSingleton<Config>();
+builder.Services.AddSingleton<LocalStorageHelper>();
 builder.Services.AddScoped<ActivityService>();
-builder.Services.AddScoped<UserService>();
 builder.Services.AddRadzenComponents();
-builder.Services.AddMsalAuthentication(options => builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication));
 
 await builder.Build().RunAsync();

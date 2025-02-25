@@ -401,3 +401,4 @@ FodyWeavers.xsd
 
 *appsettings.json
 *appsettings.Development.json
+/src/Properties/launchSettings.json
